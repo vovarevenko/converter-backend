@@ -55,8 +55,8 @@ export class RatesFetcherService implements OnModuleInit {
   private async fetchFrankfurter() {
     try {
       const res = await this.fetchWithTimeout(FRANKFURTER_URL)
-      const data = await res.json()
-      const rates: Record<string, number> = data.rates
+      const data = (await res.json()) as { rates: Record<string, number> }
+      const rates = data.rates
 
       for (const code of FRANKFURTER_CURRENCIES) {
         if (rates[code]) {
@@ -64,17 +64,21 @@ export class RatesFetcherService implements OnModuleInit {
         }
       }
       this.fiatUpdatedAt = new Date()
-      this.logger.log(`Frankfurter rates updated: ${FRANKFURTER_CURRENCIES.join(', ')}`)
+      this.logger.log(
+        `Frankfurter rates updated: ${FRANKFURTER_CURRENCIES.join(', ')}`,
+      )
     } catch (err) {
-      this.logger.error(`Failed to fetch Frankfurter rates: ${err.message}`)
+      this.logger.error(
+        `Failed to fetch Frankfurter rates: ${(err as Error).message}`,
+      )
     }
   }
 
   private async fetchExchangeRateApi() {
     try {
       const res = await this.fetchWithTimeout(EXCHANGE_RATE_API_URL)
-      const data = await res.json()
-      const rates: Record<string, number> = data.rates
+      const data = (await res.json()) as { rates: Record<string, number> }
+      const rates = data.rates
 
       for (const code of EXCHANGE_RATE_CURRENCIES) {
         if (rates[code]) {
@@ -82,16 +86,20 @@ export class RatesFetcherService implements OnModuleInit {
         }
       }
       this.fiatUpdatedAt = new Date()
-      this.logger.log(`ExchangeRate-API rates updated: ${EXCHANGE_RATE_CURRENCIES.join(', ')}`)
+      this.logger.log(
+        `ExchangeRate-API rates updated: ${EXCHANGE_RATE_CURRENCIES.join(', ')}`,
+      )
     } catch (err) {
-      this.logger.error(`Failed to fetch ExchangeRate-API rates: ${err.message}`)
+      this.logger.error(
+        `Failed to fetch ExchangeRate-API rates: ${(err as Error).message}`,
+      )
     }
   }
 
   private async fetchCoinGecko() {
     try {
       const res = await this.fetchWithTimeout(COINGECKO_URL)
-      const data = await res.json()
+      const data = (await res.json()) as Record<string, { usd: number }>
 
       for (const [id, code] of Object.entries(COINGECKO_ID_MAP)) {
         if (data[id]?.usd) {
@@ -99,9 +107,13 @@ export class RatesFetcherService implements OnModuleInit {
         }
       }
       this.cryptoUpdatedAt = new Date()
-      this.logger.log(`CoinGecko rates updated: ${Object.values(COINGECKO_ID_MAP).join(', ')}`)
+      this.logger.log(
+        `CoinGecko rates updated: ${Object.values(COINGECKO_ID_MAP).join(', ')}`,
+      )
     } catch (err) {
-      this.logger.error(`Failed to fetch CoinGecko rates: ${err.message}`)
+      this.logger.error(
+        `Failed to fetch CoinGecko rates: ${(err as Error).message}`,
+      )
     }
   }
 }
