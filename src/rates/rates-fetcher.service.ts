@@ -47,14 +47,26 @@ export class RatesFetcherService implements OnModuleInit {
   }
 
   private async fetchFrankfurter() {
-    await this.fetchFiatSource(FRANKFURTER_URL, FRANKFURTER_CURRENCIES, 'Frankfurter')
+    await this.fetchFiatSource(
+      FRANKFURTER_URL,
+      FRANKFURTER_CURRENCIES,
+      'Frankfurter',
+    )
   }
 
   private async fetchExchangeRateApi() {
-    await this.fetchFiatSource(EXCHANGE_RATE_API_URL, EXCHANGE_RATE_CURRENCIES, 'ExchangeRate-API')
+    await this.fetchFiatSource(
+      EXCHANGE_RATE_API_URL,
+      EXCHANGE_RATE_CURRENCIES,
+      'ExchangeRate-API',
+    )
   }
 
-  private async fetchFiatSource(url: string, currencies: string[], label: string) {
+  private async fetchFiatSource(
+    url: string,
+    currencies: string[],
+    label: string,
+  ) {
     try {
       const res = await this.fetchWithTimeout(url)
       const data = (await res.json()) as { rates: Record<string, number> }
