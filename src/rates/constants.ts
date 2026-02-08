@@ -36,28 +36,6 @@ export const FRANKFURTER_URL = `https://api.frankfurter.dev/v1/latest?base=USD&s
 
 export const EXCHANGE_RATE_API_URL = 'https://open.er-api.com/v6/latest/USD'
 
-// CoinGecko — popular cryptocurrencies
-const COINGECKO_IDS = [
-  'bitcoin',
-  'ethereum',
-  'the-open-network',
-  'binancecoin',
-  'ripple',
-  'solana',
-  'cardano',
-  'dogecoin',
-  'polkadot',
-  'avalanche-2',
-  'chainlink',
-  'litecoin',
-  'tron',
-  'polygon-ecosystem-token',
-  'uniswap',
-  'stellar',
-]
-
-export const COINGECKO_URL = `https://api.coingecko.com/api/v3/simple/price?ids=${COINGECKO_IDS.join(',')}&vs_currencies=usd`
-
 export const FRANKFURTER_CURRENCIES = FRANKFURTER_SYMBOLS
 
 // Popular currencies not covered by Frankfurter (sourced from ExchangeRate API)
@@ -81,6 +59,7 @@ export const EXCHANGE_RATE_CURRENCIES = [
   'VND',
 ]
 
+// CoinGecko — popular cryptocurrencies
 export const COINGECKO_ID_MAP: Record<string, string> = {
   bitcoin: 'BTC',
   ethereum: 'ETH',
@@ -99,5 +78,7 @@ export const COINGECKO_ID_MAP: Record<string, string> = {
   uniswap: 'UNI',
   stellar: 'XLM',
 }
+
+export const COINGECKO_URL = `https://api.coingecko.com/api/v3/simple/price?ids=${Object.keys(COINGECKO_ID_MAP).join(',')}&vs_currencies=usd`
 
 export const FETCH_TIMEOUT_MS = 10_000
