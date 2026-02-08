@@ -47,43 +47,28 @@ export class RatesFetcherService implements OnModuleInit {
   }
 
   private async fetchFrankfurter() {
-    try {
-      const res = await this.fetchWithTimeout(FRANKFURTER_URL)
-      const data = (await res.json()) as { rates: Record<string, number> }
-      const rates = data.rates
-
-      for (const code of FRANKFURTER_CURRENCIES) {
-        if (rates[code]) {
-          this.rates.set(code, 1 / rates[code])
-        }
-      }
-      this.logger.log(
-        `Frankfurter rates updated: ${FRANKFURTER_CURRENCIES.join(', ')}`,
-      )
-    } catch (err) {
-      this.logger.error(
-        `Failed to fetch Frankfurter rates: ${(err as Error).message}`,
-      )
-    }
+    await this.fetchFiatSource(FRANKFURTER_URL, FRANKFURTER_CURRENCIES, 'Frankfurter')
   }
 
   private async fetchExchangeRateApi() {
+    await this.fetchFiatSource(EXCHANGE_RATE_API_URL, EXCHANGE_RATE_CURRENCIES, 'ExchangeRate-API')
+  }
+
+  private async fetchFiatSource(url: string, currencies: string[], label: string) {
     try {
-      const res = await this.fetchWithTimeout(EXCHANGE_RATE_API_URL)
+      const res = await this.fetchWithTimeout(url)
       const data = (await res.json()) as { rates: Record<string, number> }
       const rates = data.rates
 
-      for (const code of EXCHANGE_RATE_CURRENCIES) {
+      for (const code of currencies) {
         if (rates[code]) {
           this.rates.set(code, 1 / rates[code])
         }
       }
-      this.logger.log(
-        `ExchangeRate-API rates updated: ${EXCHANGE_RATE_CURRENCIES.join(', ')}`,
-      )
+      this.logger.log(`${label} rates updated: ${currencies.join(', ')}`)
     } catch (err) {
       this.logger.error(
-        `Failed to fetch ExchangeRate-API rates: ${(err as Error).message}`,
+        `Failed to fetch ${label} rates: ${(err as Error).message}`,
       )
     }
   }
