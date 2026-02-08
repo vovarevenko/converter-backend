@@ -14,8 +14,6 @@ import {
 export class RatesFetcherService implements OnModuleInit {
   private readonly logger = new Logger(RatesFetcherService.name)
   private readonly rates = new Map<string, number>([['USD', 1]])
-  private fiatUpdatedAt: Date | null = null
-  private cryptoUpdatedAt: Date | null = null
 
   async onModuleInit() {
     await Promise.allSettled([this.fetchFiatRates(), this.fetchCryptoRates()])
@@ -36,10 +34,6 @@ export class RatesFetcherService implements OnModuleInit {
 
   getRate(code: string): number {
     return this.rates.get(code) ?? 0
-  }
-
-  getLastUpdated(): { fiat: Date | null; crypto: Date | null } {
-    return { fiat: this.fiatUpdatedAt, crypto: this.cryptoUpdatedAt }
   }
 
   private async fetchWithTimeout(url: string): Promise<Response> {
@@ -63,7 +57,6 @@ export class RatesFetcherService implements OnModuleInit {
           this.rates.set(code, 1 / rates[code])
         }
       }
-      this.fiatUpdatedAt = new Date()
       this.logger.log(
         `Frankfurter rates updated: ${FRANKFURTER_CURRENCIES.join(', ')}`,
       )
@@ -85,7 +78,6 @@ export class RatesFetcherService implements OnModuleInit {
           this.rates.set(code, 1 / rates[code])
         }
       }
-      this.fiatUpdatedAt = new Date()
       this.logger.log(
         `ExchangeRate-API rates updated: ${EXCHANGE_RATE_CURRENCIES.join(', ')}`,
       )
@@ -106,7 +98,6 @@ export class RatesFetcherService implements OnModuleInit {
           this.rates.set(code, data[id].usd)
         }
       }
-      this.cryptoUpdatedAt = new Date()
       this.logger.log(
         `CoinGecko rates updated: ${Object.values(COINGECKO_ID_MAP).join(', ')}`,
       )
